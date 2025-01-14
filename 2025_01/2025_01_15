@@ -1,0 +1,120 @@
+# Meeting#01
+- 데이터 : 라벨 테이블 형태로 정리 필요
+    - x, y centroid / 파일 위치(이미지 위치로 불러와야함) / expression : hdf5 format
+    - generator 만들어야 함
+- 다 사용하려고 하면, hdf5 format으로 사용해야 함
+    - fnm / tissue / x, y centroid / geneexpersseion / gene 파일 위치
+    - data generator 만들기 / batchsize 만큼씩만 메모리에서만 올리기
+
+### Tabular 데이터
+
+- DT → 해석가능성 때문에 사용
+- DNN block
+- unsupervised pre training → supervise pre training에서 최종 task를 수행
+- Sparsemax
+
+# 🗂️ MetaData 🗂️
+
+<aside>
+
+**데이터를 설명하는 데이터**로서 특성, 구조 또는 의미를 기술하는 정보를 포함하며 데이터 자체에 관한 컨텍스트를 제공한다.
+
+</aside>
+
+- 데이터 설명 : 데이터의 구조와 내용을 설명
+    - 이미지 파일의 해상도, 생성 날짜, 파일 크기
+- 데이터 검색 및 관리
+- 예시
+    - **디지털 라이브러리**: 책, 논문, 멀티미디어 콘텐츠 검색.
+    - **빅데이터**: 데이터 레이크(Data Lake)에서 데이터셋의 출처 및 특성 기록.
+    - **웹**: 웹페이지의 메타 태그(`<meta>` 태그)는 검색엔진 최적화(SEO)에 사용.
+    - **머신러닝**: 데이터셋의 특징, 라벨 정보, 전처리 방법 기록.
+    - **클라우드 스토리지**: 파일 이름, 파일 유형, 업로드 시간 등 관리.
+
+# 🎄 HDF🎄
+
+## 🌲 HDF
+
+<aside>
+
+**대규모 데이터를 계층적으로 저장**하는 타입으로, 운영체제에 제약을 거의 받지 않고, 빠르게 저장하고 쉽게 **일부**에 접근할 수 있게 해주는 데이터 타입
+
+</aside>
+
+- **계층구조**
+- **운영체제 제약 없음**
+- **다양한 데이터 타입 지원**
+- **멀티파일 관리**
+
+---
+
+## 5️⃣ HDF5
+
+<aside>
+
+파일 디렉토리 구조를 사용해서 우리가 컴퓨터에서 다양한 파일을 다루는 것처럼 하는 방식과 유사하다. 하지만 HDF5는 single file내에 포함된 파일 시스템이다.
+
+즉 directory-file구조와 비슷하게 group-dataset구조를 사용해서 HDF5파일의 루트 그룹부터 트리구조로 다른 그룹과 데이터셋을 존재하게 하는 구조이다.
+
+- **파일**
+- **그룹 : 컨테이너로서 다른 그룹이나 데이터셋을 포함할 수 있음**
+- **데이터셋 : 실제 데이터 저장단위**
+- **속성 : 데이터셋에 연결된 메타데이터**
+</aside>
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/9e6d49b9-5633-47b3-be57-62d190018cd1/ab6303ed-1859-45e6-a5b4-d64c526395a9/image.png)
+
+### 🙌 Self-Describing
+
+<aside>
+
+**각 group혹은 dataset**이 정확히 어떤 데이터인지를 묘사하는 **metadata와 관련**되어 있다는 것
+
+</aside>
+
+- Self-Describing을 사용하는 이유는 그 데이터셋으로부터 이미 연결되어 있는 메타데이터로부터 쉽게 데이터를 처리하기 위한 정보를 가져올 수 있다는 것
+
+![스크린샷 2025-01-14 오후 11.51.49.jpg](https://prod-files-secure.s3.us-west-2.amazonaws.com/9e6d49b9-5633-47b3-be57-62d190018cd1/bf6c34af-30b5-409c-9913-9d3edf85f7e7/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2025-01-14_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_11.51.49.jpg)
+
+**사용하는 이유**
+
+- 효율성
+- 다양한 타입 저장 가능
+- 공짜
+
+> https://github.com/crunchdao/competitions/blob/master/competitions/broad-1/quickstarters/resnet50-plus-ridge/resnet50-plus-ridge.ipynb
+> 
+
+# 🔗 ResNet50 + Ridge 🚫
+
+---
+
+## 🧗 Sequence
+
+### 1. 이미지 임베딩(ResNet)
+
+ 병리 이미지로부터 임베딩 벡터를 생성
+
+**과정**
+
+1. 이미지 입력
+2. ResNet50을 통한 임베딩
+3. 저차원 벡터 생성
+
+### 2. 유전자 발현 예측(Ridge)
+
+ 이미지 임베딩 벡터를 기반으로 Ridge 회귀를 사용하여 460개의 유전자 예측
+
+**▪️ 과정**
+
+1. 이미지 임베딩 벡터를 입력으로 사용
+2. 유전자 발현값을 Ridge 회귀로 예측
+3. 최종적으로 각 패치에 대해 460개의 유전자 발현 값을 출력
+
+---
+
+## 📌 Extension
+
+- 모델 교체(임베딩, 회귀)
+- 추가 데이터 통합 - 병리학 정보 외에도 성능 향상
+- 하이퍼파라미터 튜닝
